@@ -1,7 +1,10 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { User, UsersResponse } from '../interfaces/req.response';
+
+// se usa type , debido a que como son interface , no se haga ningun tipo de transpilacion
+
+import type { User, UserResponse, UsersResponse } from '../interfaces/req.response';
 import { HttpClient } from '@angular/common/http';
-import { delay } from 'rxjs';
+import { delay, map } from 'rxjs';
 
 interface State {
   users:User[];
@@ -33,7 +36,6 @@ export class UsersService {
       delay(1500)
     )
     .subscribe(resp => {
-      console.log("resp",resp);
 
       this.#state.set({
         loading:false,
@@ -45,5 +47,20 @@ export class UsersService {
 
 
    }
+
+   getUserById(id:string){
+
+    return this.http.get<UserResponse>(`https://reqres.in/api/users/${id}`)
+    .pipe(
+      delay(1500),
+      map( resp => resp.data)
+    )
+
+
+
+
+   }
+
+
 
 }
